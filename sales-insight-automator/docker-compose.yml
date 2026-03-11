@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  # ─── Backend API ────────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ../Dockerfile
+    container_name: sia-backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      NODE_ENV: development
+      PORT: 5000
+    env_file:
+      - .env.example   # swap to .env once you add real secrets
+    volumes:
+      # Mount source for hot-reload during local development
+      - ./backend:/app
+      - /app/node_modules  # prevent host node_modules from overriding container
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+# ─── Notes ───────────────────────────────────────────────────────────────────
+# Future services to add when implementing the full system:
+#
+#   db:
+#     image: postgres:15-alpine
+#     environment:
+#       POSTGRES_DB: sales_insights
+#       POSTGRES_USER: siuser
+#       POSTGRES_PASSWORD: ${DB_PASSWORD}
+#
+#   redis:
+#     image: redis:7-alpine
+#     ports:
+#       - "6379:6379"
