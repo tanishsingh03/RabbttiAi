@@ -20,7 +20,7 @@ export default function App() {
 
         // Integration pending — using simulated response during local dev
         // TODO: replace with fetch('/analyze', { method: 'POST', body: formData })
-        setTimeout(() => setState('success'), MOCK_DELAY)
+        setTimeout(() => setState('error'), MOCK_DELAY)
     }
 
     const reset = () => {
@@ -86,8 +86,9 @@ export default function App() {
                     <div className="status error">
                         <span className="status-icon">❌</span>
                         <div>
-                            <strong>Submission Failed</strong>
-                            Something went wrong. Please try again.
+                            <strong>Server Unavailable</strong>
+                            Could not connect to the analysis server. This may be a temporary
+                            outage — please try again in a few moments.
                             <br />
                             <button className="link-btn" onClick={reset}>Try again</button>
                         </div>
