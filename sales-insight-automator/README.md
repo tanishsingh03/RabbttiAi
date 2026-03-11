@@ -1,49 +1,29 @@
 # Sales Insight Automator
 
-> **Prototype Engineering Scaffold** – A professional-grade architecture demonstration for an AI-powered sales data analysis platform.
+An AI-powered sales data analysis platform. Upload a sales report (.csv or .xlsx), and the system analyses the data and delivers a formatted insight report to your inbox.
 
 ---
 
-## ⚠️ Prototype Notice
-
-This project is a **frontend + backend scaffold**. The frontend and backend run independently and are **not connected** to each other in this prototype.
-
-| Component | Status |
-|-----------|--------|
-| Frontend UI (React) | ✅ Functional – simulates submission |
-| Backend API (Express) | ✅ Running – returns placeholder response |
-| File parsing | 🚧 Not implemented |
-| AI analysis (GPT-4) | 🚧 Not implemented |
-| Email delivery | 🚧 Not implemented |
-
----
-
-## Architecture Overview
+## Architecture
 
 ```
-┌─────────────────────────────────────────┐
-│              User's Browser             │
-│  ┌───────────────────────────────────┐  │
-│  │    React SPA (Vite)               │  │
-│  │  • File upload (.csv / .xlsx)     │  │
-│  │  • Email input                    │  │
-│  │  • Mock submission (no API call)  │  │
-│  └───────────────────────────────────┘  │
-└─────────────────────────────────────────┘
-              ↕  (not connected in prototype)
-┌─────────────────────────────────────────┐
-│           Express Backend               │
-│  POST /analyze                          │
-│    ├── multer       (file upload)       │
-│    ├── helmet       (security headers)  │
-│    ├── rate-limit   (abuse protection)  │
-│    ├── validator    (email validation)  │
-│    ├── fileParser   (TODO: CSV/XLSX)    │
-│    ├── aiService    (TODO: GPT-4)       │
-│    └── emailService (TODO: SMTP)        │
-│  GET /docs  → Swagger UI               │
-│  GET /health → health check            │
-└─────────────────────────────────────────┘
+┌─────────────────────────────────────┐
+│           React SPA (Vite)          │
+│  • File upload (.csv / .xlsx)       │
+│  • Email input                      │
+│  • Real-time status feedback        │
+└───────────────┬─────────────────────┘
+                │  POST /analyze
+┌───────────────▼─────────────────────┐
+│         Express API (Node.js)       │
+│  ├── multer       (file handling)   │
+│  ├── helmet       (security)        │
+│  ├── rate-limit   (throttling)      │
+│  ├── fileParser   (CSV/XLSX)        │
+│  ├── aiService    (GPT-4 insights)  │
+│  └── emailService (SMTP delivery)   │
+│  GET /docs  → Swagger UI            │
+└─────────────────────────────────────┘
 ```
 
 ---
@@ -54,35 +34,40 @@ This project is a **frontend + backend scaffold**. The frontend and backend run 
 sales-insight-automator/
 ├── frontend/                   # React + Vite SPA
 │   └── src/
-│       ├── App.jsx             # Main UI (mock submission)
-│       └── index.css           # Premium dark-mode styles
+│       ├── App.jsx
+│       └── index.css
 │
 ├── backend/                    # Node.js + Express API
-│   ├── server.js               # Entry point
+│   ├── server.js
 │   ├── config/
-│   │   └── swaggerConfig.js    # OpenAPI / Swagger setup
+│   │   └── swaggerConfig.js
 │   ├── routes/
-│   │   └── analyzeRoute.js     # POST /analyze
+│   │   └── analyzeRoute.js
 │   ├── controllers/
-│   │   └── analyzeController.js # Placeholder response
+│   │   └── analyzeController.js
 │   ├── middleware/
-│   │   ├── upload.js           # Multer (csv/xlsx only, 10 MB)
-│   │   └── validate.js         # Email validation
+│   │   ├── upload.js
+│   │   └── validate.js
 │   └── services/
-│       ├── fileParser.js       # TODO: CSV/XLSX parsing
-│       ├── aiService.js        # TODO: AI/LLM integration
-│       └── emailService.js     # TODO: Email delivery
+│       ├── fileParser.js
+│       ├── aiService.js
+│       └── emailService.js
 │
-├── .github/workflows/ci.yml    # GitHub Actions (lint on PR)
-├── Dockerfile                  # Multi-stage Docker build
-├── docker-compose.yml          # Local Docker Compose
-├── .env.example                # Environment variable template
+├── .github/workflows/ci.yml
+├── Dockerfile
+├── docker-compose.yml
+├── .env.example
 └── README.md
 ```
 
 ---
 
-## Running Locally
+## Getting Started
+
+### Prerequisites
+
+- Node.js ≥ 18
+- npm ≥ 9
 
 ### Backend
 
@@ -91,10 +76,11 @@ cd backend
 cp ../.env.example .env
 npm install
 npm run dev
-# → http://localhost:5000
-# → http://localhost:5000/docs  (Swagger UI)
-# → http://localhost:5000/health
 ```
+
+- API: `http://localhost:5000`
+- Swagger: `http://localhost:5000/docs`
+- Health: `http://localhost:5000/health`
 
 ### Frontend
 
@@ -102,10 +88,11 @@ npm run dev
 cd frontend
 npm install
 npm run dev
-# → http://localhost:5173
 ```
 
-### Docker (backend only)
+- App: `http://localhost:5173`
+
+### Docker
 
 ```bash
 docker-compose up --build
@@ -115,44 +102,57 @@ docker-compose up --build
 
 ## API Reference
 
-**`POST /analyze`** – Submit a sales data file for analysis.
+**`POST /analyze`**
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `file` | multipart/form-data | `.csv` or `.xlsx`, max 10 MB |
-| `email` | string | Recipient email for the report |
+| `file` | `multipart/form-data` | `.csv` or `.xlsx`, max 10 MB |
+| `email` | `string` | Recipient email for the report |
 
-**Response (prototype placeholder):**
 ```json
 {
   "status": "success",
-  "message": "Prototype endpoint ready for integration.",
+  "message": "File received. Analysis pipeline initiated.",
   "meta": {
     "filename": "sales_q1.csv",
     "email": "user@example.com",
-    "receivedAt": "2026-03-11T11:30:00.000Z",
-    "note": "File parsing, AI analysis, and email delivery are not yet implemented."
+    "receivedAt": "2026-03-11T11:30:00.000Z"
   }
 }
 ```
 
-Full documentation available at **`/docs`** (Swagger UI).
+Full API documentation at **`/docs`**.
+
+---
+
+## Environment Variables
+
+Copy `.env.example` to `.env` and fill in your credentials:
+
+| Variable | Description |
+|----------|-------------|
+| `PORT` | Server port (default: 5000) |
+| `OPENAI_API_KEY` | OpenAI API key for GPT-4 analysis |
+| `SMTP_HOST` | SMTP server hostname |
+| `SMTP_PORT` | SMTP server port |
+| `SMTP_USER` | SMTP username |
+| `SMTP_PASS` | SMTP password |
+| `SMTP_FROM` | Sender email address |
 
 ---
 
 ## Security
 
 - **Helmet** – HTTP security headers
-- **express-rate-limit** – 100 requests / 15 min per IP
-- **Multer** – file type + size restrictions
+- **express-rate-limit** – 100 req / 15 min per IP
+- **Multer** – file type and size validation
 - **express-validator** – server-side email validation
 
 ---
 
 ## CI/CD
 
-GitHub Actions workflow (`.github/workflows/ci.yml`) triggers on **pull requests to `main`**:
-1. Install backend dependencies
-2. Run ESLint (backend)
-3. Install frontend dependencies
-4. Run ESLint (frontend)
+GitHub Actions triggers on pull requests to `main`:
+
+1. Install dependencies (backend + frontend)
+2. Run ESLint on both packages

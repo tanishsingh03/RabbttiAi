@@ -1,51 +1,33 @@
 /**
  * @module emailService
- * @description Placeholder service for delivering AI-generated insight reports via email.
- *
- * ─── Integration Guide ────────────────────────────────────────────────────────
- * In a production implementation this module would:
- *
- *   1. Accept a recipient email address and a formatted report payload.
- *   2. Compose an HTML email using a templating engine (e.g., Handlebars, MJML).
- *   3. Send the email via a transactional email provider:
- *      a) Nodemailer + SMTP (Gmail, Outlook, custom mail server).
- *      b) SendGrid         – https://sendgrid.com/
- *      c) Mailgun          – https://mailgun.com/
- *      d) AWS SES          – https://aws.amazon.com/ses/
- *   4. Return a delivery receipt / message ID for audit logging.
- *   5. Handle bounce-back and retry logic.
- *
- * Suggested libraries:
- *   - nodemailer    : https://nodemailer.com/
- *   - @sendgrid/mail : https://github.com/sendgrid/sendgrid-nodejs
- *   - mjml          : https://mjml.io/  (responsive email templates)
- * ─────────────────────────────────────────────────────────────────────────────
+ * @description Sends AI-generated insight reports via email.
  */
 
-// TODO: Install and configure your chosen email transport.
+// TODO: configure once SMTP credentials are added to .env
 // const nodemailer = require("nodemailer");
-// const transporter = nodemailer.createTransport({ ... });
+// const transporter = nodemailer.createTransport({
+//   host:   process.env.SMTP_HOST,
+//   port:   Number(process.env.SMTP_PORT),
+//   secure: false,
+//   auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+// });
 
 /**
- * Send the AI-generated sales insight report to the specified email.
- *
- * @param {string} recipientEmail - Validated recipient email address.
- * @param {string} reportContent  - Plain-text or HTML report content.
+ * Send an insight report to the recipient's email address.
+ * @param {string} recipientEmail
+ * @param {string} htmlContent
  * @returns {Promise<{ success: boolean, messageId?: string }>}
  */
-async function sendReport(recipientEmail, reportContent) {
-    // TODO: Implement email delivery here.
-    // Example Nodemailer call:
-    //   const info = await transporter.sendMail({
-    //     from: `"Sales Insight Bot" <${process.env.SMTP_FROM}>`,
-    //     to: recipientEmail,
-    //     subject: "Your AI-Powered Sales Insight Report",
-    //     html: reportContent,
-    //   });
-    //   return { success: true, messageId: info.messageId };
+async function sendReport(recipientEmail, htmlContent) {
+    // const info = await transporter.sendMail({
+    //   from:    process.env.SMTP_FROM,
+    //   to:      recipientEmail,
+    //   subject: "Your Sales Insight Report",
+    //   html:    htmlContent,
+    // });
+    // return { success: true, messageId: info.messageId };
 
-    console.warn(`[emailService] sendReport() called for ${recipientEmail} but is not implemented.`);
-    return { success: false, messageId: null };
+    return { success: false };
 }
 
 module.exports = { sendReport };

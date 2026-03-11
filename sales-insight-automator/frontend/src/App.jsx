@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 
-const MOCK_DELAY = 2000 // ms to simulate network request
+const MOCK_DELAY = 2000
 
 export default function App() {
     const [email, setEmail] = useState('')
@@ -13,23 +13,14 @@ export default function App() {
         if (f) setFile(f)
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
         if (!file || !email) return
-
         setState('loading')
 
-        // ─── Mock submission (frontend-only simulation) ───────────────────────────
-        // NOTE: This prototype does NOT call the backend API.
-        // In production, replace this with:
-        //   const formData = new FormData()
-        //   formData.append('file', file)
-        //   formData.append('email', email)
-        //   const res = await fetch('/analyze', { method: 'POST', body: formData })
-        // ─────────────────────────────────────────────────────────────────────────
-        setTimeout(() => {
-            setState('success')
-        }, MOCK_DELAY)
+        // Integration pending — using simulated response during local dev
+        // TODO: replace with fetch('/analyze', { method: 'POST', body: formData })
+        setTimeout(() => setState('success'), MOCK_DELAY)
     }
 
     const reset = () => {
@@ -49,7 +40,6 @@ export default function App() {
 
     return (
         <div className="app">
-            {/* Header */}
             <div className="badge">
                 <span className="badge-dot" />
                 AI-Powered Analytics
@@ -61,9 +51,7 @@ export default function App() {
                 directly to your inbox.
             </p>
 
-            {/* Card */}
             <div className="card">
-                {/* Progress steps */}
                 <div className="steps">
                     <div className={`step ${stepState(1)}`}>
                         <div className="step-num">{stepState(1) === 'done' ? '✓' : '1'}</div>
@@ -81,14 +69,13 @@ export default function App() {
                     </div>
                 </div>
 
-                {/* Status messages */}
                 {state === 'success' && (
                     <div className="status success">
                         <span className="status-icon">✅</span>
                         <div>
                             <strong>Report Queued!</strong>
-                            Your file <em>{file?.name}</em> is being analysed. The AI-generated
-                            report will be sent to <strong>{email}</strong> shortly.
+                            Your file <em>{file?.name}</em> is being analysed. Results will be
+                            sent to <strong>{email}</strong> shortly.
                             <br />
                             <button className="link-btn" onClick={reset}>Submit another file</button>
                         </div>
@@ -107,10 +94,8 @@ export default function App() {
                     </div>
                 )}
 
-                {/* Form (hidden once success) */}
                 {state !== 'success' && (
                     <form className="form" onSubmit={handleSubmit}>
-                        {/* File upload */}
                         <div className="field">
                             <label htmlFor="file-input">Sales Data File</label>
                             <input
@@ -127,10 +112,9 @@ export default function App() {
                                     {file ? file.name : 'Choose a .csv or .xlsx file…'}
                                 </span>
                             </label>
-                            <span className="file-hint">Supported formats: .csv, .xlsx · Max size: 10 MB</span>
+                            <span className="file-hint">Supported: .csv, .xlsx · Max 10 MB</span>
                         </div>
 
-                        {/* Email input */}
                         <div className="field">
                             <label htmlFor="email-input">Report Recipient Email</label>
                             <div className="input-wrap">
@@ -147,28 +131,21 @@ export default function App() {
                             </div>
                         </div>
 
-                        {/* Submit */}
                         <button
                             type="submit"
                             className="btn"
                             disabled={!file || !email || state === 'loading'}
                         >
                             {state === 'loading' ? (
-                                <>
-                                    <span className="spinner" />
-                                    Analysing Data…
-                                </>
+                                <><span className="spinner" />Analysing Data…</>
                             ) : (
-                                <>
-                                    ⚡ Generate AI Report
-                                </>
+                                <>⚡ Generate AI Report</>
                             )}
                         </button>
                     </form>
                 )}
             </div>
 
-            {/* Feature strip */}
             <div className="features">
                 <div className="feature"><span className="feature-icon">🔒</span> End-to-end encrypted</div>
                 <div className="feature"><span className="feature-icon">🤖</span> GPT-4 powered insights</div>

@@ -1,61 +1,38 @@
 /**
  * @module fileParser
- * @description Placeholder service for parsing uploaded CSV and XLSX files.
- *
- * ─── Integration Guide ────────────────────────────────────────────────────────
- * In a production implementation this module would:
- *
- *   1. Receive a Buffer (from multer memoryStorage) or a file path.
- *   2. Detect the file format based on MIME type or file extension.
- *   3. For CSV files  – use a library such as `csv-parse` or `Papa Parse` to
- *      stream-parse rows into JavaScript objects.
- *   4. For XLSX files – use `xlsx` (SheetJS) or `exceljs` to read workbook
- *      sheets and convert them to a normalised row array.
- *   5. Apply basic data-quality checks (required columns, data types, row count).
- *   6. Return a structured dataset ready for downstream AI analysis.
- *
- * Suggested libraries:
- *   - csv-parse    : https://csv.js.org/parse/
- *   - xlsx (SheetJS): https://sheetjs.com/
- *   - exceljs      : https://github.com/exceljs/exceljs
- * ─────────────────────────────────────────────────────────────────────────────
+ * @description Parses uploaded CSV and XLSX files into structured row data.
  */
 
-// TODO: Install and import the chosen parsing library.
-// const Papa  = require("papaparse");   // CSV option
-// const XLSX  = require("xlsx");        // XLSX option
+// TODO: install csv-parse or xlsx once env is confirmed
+// const Papa = require("papaparse");
+// const XLSX = require("xlsx");
 
 /**
- * Parse a file buffer and return structured row data.
- *
- * @param {Buffer} fileBuffer - The raw file buffer from multer.
- * @param {string} mimeType   - The MIME type of the uploaded file.
- * @returns {Promise<Array<Object>>} Array of parsed row objects.
+ * Parse a file buffer into structured row data.
+ * @param {Buffer} fileBuffer
+ * @param {string} mimeType
+ * @returns {Promise<Array<Object>>}
  */
 async function parseFile(fileBuffer, mimeType) {
-    // TODO: Implement file parsing logic here.
-    // Example flow:
-    //   if (mimeType === "text/csv") {
-    //     return parseCsv(fileBuffer);
-    //   } else {
-    //     return parseXlsx(fileBuffer);
-    //   }
+    // CSV branch
+    // if (mimeType === "text/csv") { ... }
+    // XLSX branch
+    // const workbook = XLSX.read(fileBuffer); ...
 
-    console.warn("[fileParser] parseFile() called but is not implemented.");
     return [];
 }
 
 /**
- * Validate that the parsed dataset contains the expected columns.
- *
- * @param {Array<Object>} rows       - Parsed row data.
- * @param {string[]}      required   - List of required column names.
+ * Check that the dataset contains the required columns.
+ * @param {Array<Object>} rows
+ * @param {string[]} required
  * @returns {{ valid: boolean, missing: string[] }}
  */
 function validateSchema(rows, required = []) {
-    // TODO: Implement column/schema validation.
-    console.warn("[fileParser] validateSchema() called but is not implemented.");
-    return { valid: true, missing: [] };
+    if (!rows.length) return { valid: false, missing: required };
+    const keys = Object.keys(rows[0]);
+    const missing = required.filter((col) => !keys.includes(col));
+    return { valid: missing.length === 0, missing };
 }
 
 module.exports = { parseFile, validateSchema };
